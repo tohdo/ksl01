@@ -45,10 +45,18 @@ pub struct VarMgr<'a> {
 }
 
 impl<'a> VarMgr<'a> {
+    // This version fails to compile with following error
+    // error[E0502]: cannot borrow `*pool` as mutable because it is
+    // also borrowed as immutable
     fn new_context(&'a mut self, name: &str) -> &'a VarContextNode<'a> {
         let pool = &mut self.pool;
+
         let lnode = pool.last();
+        // immutable borrow of pool by last()
+        
         pool.push(
+        // mutable borrow of pool by push()
+        
             VarContextNode{ va: Var{name: String::from(name)},
                             next: lnode }
         );
