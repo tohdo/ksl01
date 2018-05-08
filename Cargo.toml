@@ -1,0 +1,6 @@
+[package]
+name = "ksl01"
+version = "0.1.0"
+authors = ["tohdo"]
+
+[dependencies]
