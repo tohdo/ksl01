@@ -1,6 +1,6 @@
-extern crate ksl02;
+extern crate ksl01;
 
-use ksl02::expr::*;
+use ksl01::expr::*;
 
 fn main() {
     let mut b = Builder::new();
