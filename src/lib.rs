@@ -1,6 +1,4 @@
 pub mod expr;
-pub mod vars;
-pub mod builder;
 
 #[cfg(test)]
 mod tests {

@@ -1,18 +1,31 @@
-extern crate ksl01;
+extern crate ksl02;
 
-use ksl01::builder::*;
+use ksl02::expr::*;
 
 fn main() {
     let mut b = Builder::new();
 
-    b.mk_var("f");
-    b.mk_var("x");
-    b.push_varref("f");
-    b.push_varref("x");
-    b.push_app();
-    b.push_lam();
+    b.push_var("a");
+    b.push_varref("a");
     b.push_lam();
 
-    let r = b.pop();
+    let mut e = b.pop();
+
+    {
+        let mut b2 = Builder::new();
+
+        b2.push_var("f");
+        b2.push_var("x");
+        b2.push_varref("f");
+        b2.push_varref("x");
+        b2.push_apply();
+        b2.push_lam();
+        b2.push_lam();
+
+        e = b2.pop();
+    }
+
+    println!("hello!");
 }
+
 
