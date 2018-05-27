@@ -1,3 +1,9 @@
+use error::*;
+
+macro_rules! kerr {
+    () => (KError { file: file!(), line: line!() });
+}
+
 pub struct Var {
     pub name: String
 }
@@ -41,52 +47,54 @@ impl Builder {
         return None;
     }
 
-    pub fn push_var(&mut self, name: & str){
+    pub fn push_var(&mut self, name: & str) -> KResult<()> {
         self.vars.push(Var{name: String::from(name)});
-        let v: *const Var = self.vars.last().unwrap();
+        let v: *const Var = try!(self.vars.last().ok_or(kerr!()));
         self.stack.push(Box::new(Opr::PushVar(v)));
+        return Ok(());
     }
 
-    pub fn push_lam(&mut self){
-        let pb = self.stack.pop().unwrap();
-        let pv = self.stack.pop().unwrap();
+    pub fn push_lam(&mut self) -> KResult<()> {
+        let pb = try!(self.stack.pop().ok_or(kerr!()));
+        let pv = try!(self.stack.pop().ok_or(kerr!()));
         match (*pv, *pb) {
             (Opr::PushVar(v), Opr::Push(e)) => {
                 let e2 = Box::new(Expr::Lam { va: v, body: e });
                 self.stack.push(Box::new(Opr::Push(e2)));
-                return;
+                return Ok(());
             }
             _ => {}
         }
-        panic!();
+        return Err(kerr!());
     }
 
-    pub fn push_varref(&mut self, name: &str){
-        let v = self.lookup(name).unwrap();
+    pub fn push_varref(&mut self, name: &str) -> KResult<()> {
+        let v = try!(self.lookup(name).ok_or(kerr!()));
         let e = Box::new(Expr::VarRef(v));
         self.stack.push(Box::new(Opr::Push(e)));
+        return Ok(());
     }
 
-    pub fn push_apply(&mut self){
-        let parg = self.stack.pop().unwrap();
-        let pfun = self.stack.pop().unwrap();
+    pub fn push_apply(&mut self) -> KResult<()> {
+        let parg = try!(self.stack.pop().ok_or(kerr!()));
+        let pfun = try!(self.stack.pop().ok_or(kerr!()));
         match (*pfun, *parg) {
             (Opr::Push(fun), Opr::Push(arg)) => {
                 let e = Box::new(Expr::App{ fun: fun, arg: arg });
                 self.stack.push(Box::new(Opr::Push(e)));
-                return;
+                return Ok(());
             }
             _ => {}
         }
-        panic!();
+        return Err(kerr!());
     }
 
-    pub fn pop(mut self) -> Box<Expr>{
-        let p = self.stack.pop().unwrap();
-        if let Some(_) = self.stack.last(){ panic!(); }
+    pub fn pop(mut self) -> KResult<Box<Expr>>{
+        let p = try!(self.stack.pop().ok_or(kerr!()));
+        if ! self.stack.is_empty(){ return Err(kerr!()); }
         if let Opr::Push(e) = *p {
-            return e;
+            return Ok(e);
         }
-        panic!();
+        return Err(kerr!());
     }
 }

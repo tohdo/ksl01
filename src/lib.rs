@@ -1,4 +1,5 @@
 pub mod expr;
+pub mod error;
 
 #[cfg(test)]
 mod tests {

@@ -1,31 +1,33 @@
 extern crate ksl01;
 
 use ksl01::expr::*;
+use ksl01::error::*;
 
-fn main() {
+fn main() -> KResult<()>{
     let mut b = Builder::new();
 
-    b.push_var("a");
-    b.push_varref("a");
-    b.push_lam();
+    try!(b.push_var("a"));
+    try!(b.push_varref("a"));
+    try!(b.push_lam());
 
-    let mut e = b.pop();
+    let mut e = try!(b.pop());
 
     {
         let mut b2 = Builder::new();
 
-        b2.push_var("f");
-        b2.push_var("x");
-        b2.push_varref("f");
-        b2.push_varref("x");
-        b2.push_apply();
-        b2.push_lam();
-        b2.push_lam();
+        try!(b2.push_var("f"));
+        try!(b2.push_var("x"));
+        try!(b2.push_varref("f"));
+        try!(b2.push_varref("x"));
+        try!(b2.push_apply());
+        try!(b2.push_lam());
+        try!(b2.push_lam());
 
-        e = b2.pop();
+        e = try!(b2.pop());
     }
 
     println!("hello!");
+    return Ok(());
 }
 
 
