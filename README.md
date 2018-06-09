@@ -9,9 +9,11 @@
 
 0. simple AST builder
 
-	1.0. Rust のメモリ管理に沿った実装を行う
+	0. Rust のメモリ管理に沿った実装を行う
 
-	1.0. エラー処理   **<- 今ココ**
+	0. エラー処理   **<- 今ココ**
+
+0. simple parser
 
 0. Typing
 
