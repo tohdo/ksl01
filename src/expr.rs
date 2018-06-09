@@ -35,9 +35,9 @@ impl Builder {
         while i != 0 {
             i = i - 1;
             let e: & Opr = &*self.stack[i];
-            if let Opr::PushVar(v) = e {
+            if let Opr::PushVar(v) = *e {
                 unsafe {
-                    let mut v2: &Var = &**v;
+                    let mut v2: &Var = &*v;
                     if v2.name == String::from(name) {
                         return Some(v2);
                     }
